@@ -6,18 +6,21 @@ import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hoo
 import { Button } from "@/components/ui/button";
 import type { InvoiceInput } from "@/shared/dto/invoice.dto";
 import { formatCents } from "@/shared/format";
-import { lineTotalCents } from "@/shared/invoice/calculate-totals";
+import { calculateSubtotalCents, lineTotalCents } from "@/shared/invoice/calculate-totals";
 import { INVOICE_LIMITS as LIMITS } from "@/shared/invoice/limits";
 import { DecimalField, TextField } from "../form-fields";
-import { emptyLineItem } from "../invoice-form-values";
+import { emptyLineItem, toPreviewTotalsInput } from "../invoice-form-values";
 import { SectionCard } from "../section-card";
 
 export function LineItemsSection() {
   const { control, trigger } = useFormContext<InvoiceInput>();
   const { fields, append, remove } = useFieldArray({ control, name: "lineItems" });
   const { errors } = useFormState({ control, name: "lineItems" });
+  const lineItems = useWatch({ control, name: "lineItems" });
   const listError = errors.lineItems?.root?.message ?? errors.lineItems?.message;
   const canAdd = fields.length < LIMITS.lineItems;
+  const subtotalCents = calculateSubtotalCents(toPreviewTotalsInput({ lineItems }).lineItems);
+  const summary = `${lineItems.length} ${lineItems.length === 1 ? "item" : "items"} · ${formatCents(subtotalCents)} subtotal`;
 
   const addItem = () => {
     if (canAdd) append(emptyLineItem(), { focusName: `lineItems.${fields.length}.description` });
@@ -32,6 +35,8 @@ export function LineItemsSection() {
     <SectionCard
       title="Line items"
       description="Each line is quantity × unit price, rounded to the cent."
+      summary={summary}
+      fields={["lineItems"]}
     >
       <ol className="flex flex-col gap-3">
         {fields.map((field, index) => (
@@ -53,7 +58,7 @@ export function LineItemsSection() {
         variant="secondary"
         onClick={addItem}
         disabled={!canAdd}
-        className="mt-3 w-full border-dashed shadow-none"
+        className="mt-4 w-full bg-field shadow-none hover:bg-field-hover"
       >
         <Plus aria-hidden />
         Add line item
@@ -94,7 +99,7 @@ function LineItemRow({ index, canRemove, onRemove, onEnterInLastField }: LineIte
     <li
       role="group"
       aria-labelledby={headingId}
-      className="rounded-xl border border-line bg-surface-muted/70 p-3 sm:p-4"
+      className="rounded-xl bg-surface p-3 shadow-tile sm:p-4"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <h3 id={headingId} className="text-xs font-semibold tracking-wide text-ink-muted uppercase">

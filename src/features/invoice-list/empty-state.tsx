@@ -4,7 +4,7 @@ import { buttonStyles } from "@/components/ui/button";
 
 export function EmptyState() {
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed border-line-strong bg-surface/60 px-6 py-16 text-center">
+    <div className="flex flex-col items-center rounded-2xl bg-surface px-6 py-16 text-center shadow-panel">
       <StackedSheets />
       <h2 className="mt-6 font-display text-[1.75rem] leading-tight">No invoices yet</h2>
       <p className="mt-2 max-w-sm text-ink-muted">

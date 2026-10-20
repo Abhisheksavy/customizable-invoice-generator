@@ -13,6 +13,8 @@ export function NotesSection() {
     <SectionCard
       title="Notes"
       description="Payment instructions or a thank-you, shown at the bottom of the invoice."
+      summary={notes.trim().split("\n")[0] || "No notes"}
+      fields={["notes"]}
     >
       <TextAreaField
         name="notes"

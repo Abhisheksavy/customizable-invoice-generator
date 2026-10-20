@@ -9,10 +9,22 @@ import { toPreviewTotalsInput } from "../invoice-form-values";
 import { SectionCard } from "../section-card";
 
 export function AdjustmentsSection() {
+  const [discountCents, taxRatePercent] = useWatch<
+    InvoiceInput,
+    ["discountCents", "taxRatePercent"]
+  >({ name: ["discountCents", "taxRatePercent"] });
+  const amounts = toPreviewTotalsInput({ discountCents, taxRatePercent });
+  const summary = [
+    amounts.discountCents > 0 ? `${formatCents(amounts.discountCents)} off` : "No discount",
+    amounts.taxRatePercent > 0 ? `${formatDecimal(amounts.taxRatePercent)}% tax` : "no tax",
+  ].join(" · ");
+
   return (
     <SectionCard
       title="Discount & tax"
       description="The discount comes off the subtotal, then tax is charged on what's left."
+      summary={summary}
+      fields={["discountCents", "taxRatePercent"]}
     >
       <div className="grid gap-4 @lg:grid-cols-2">
         <DecimalField
@@ -48,7 +60,7 @@ function TotalsSummary() {
   const totals = calculateTotals(input);
 
   return (
-    <dl className="mt-5 rounded-xl bg-surface-muted p-4 text-sm">
+    <dl className="mt-5 rounded-xl bg-field p-4 text-sm">
       <SummaryRow label="Subtotal" value={formatCents(totals.subtotalCents)} />
       <SummaryRow label="Discount" value={`−${formatCents(totals.discountCents)}`} />
       <SummaryRow

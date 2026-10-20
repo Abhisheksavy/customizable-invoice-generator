@@ -8,7 +8,7 @@ const SAMPLE_BUSINESS: PartyInput = {
 };
 
 /** Fictional invoices for the landing page and `npm run db:seed`, dated relative to `today`. */
-export function sampleInvoices(today: string): [InvoiceInput, ...InvoiceInput[]] {
+export function sampleInvoices(today: string): [InvoiceInput, InvoiceInput, InvoiceInput] {
   return [
     {
       invoiceNumber: "INV-0003",

@@ -2,7 +2,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export const controlStyles =
-  "w-full min-w-0 rounded-lg border border-line-strong bg-surface px-3 text-base text-ink shadow-card transition-colors placeholder:text-ink-muted/70 hover:border-ink-muted/60 focus-visible:border-brand aria-invalid:border-danger aria-invalid:bg-danger-tint/40 disabled:cursor-not-allowed disabled:bg-surface-muted sm:text-sm";
+  "w-full min-w-0 scroll-mt-32 rounded-lg bg-field px-3 text-base text-ink shadow-field transition-colors placeholder:text-ink-muted/70 hover:bg-field-hover focus-visible:bg-surface aria-invalid:bg-danger-tint aria-invalid:shadow-[inset_0_0_0_1px_var(--color-danger)] disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm";
 
 export interface InputProps extends ComponentProps<"input"> {
   leading?: ReactNode;

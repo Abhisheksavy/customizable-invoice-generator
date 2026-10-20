@@ -56,7 +56,7 @@ export function Dialog({
         className,
       )}
     >
-      <div className="rounded-2xl border border-line bg-surface p-5 shadow-float max-sm:rounded-b-none max-sm:pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-6">
+      <div className="rounded-2xl bg-surface p-5 shadow-float max-sm:rounded-b-none max-sm:pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-6">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h2 id={titleId} className="text-lg font-semibold">

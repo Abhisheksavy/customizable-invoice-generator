@@ -8,7 +8,7 @@ const DESKTOP_COLUMNS = "md:grid-cols-[7.5rem_minmax(0,1fr)_8rem_8rem_5.5rem_8re
 
 export function InvoiceList({ invoices }: { invoices: InvoiceSummaryDto[] }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
+    <div className="overflow-hidden rounded-2xl bg-surface shadow-panel">
       <div
         aria-hidden
         className={`hidden gap-4 border-b border-line bg-surface-muted px-5 py-3 text-xs font-semibold tracking-wide text-ink-muted uppercase md:grid ${DESKTOP_COLUMNS}`}

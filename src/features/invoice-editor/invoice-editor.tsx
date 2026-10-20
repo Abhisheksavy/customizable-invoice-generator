@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { FormProvider, useForm, type FieldErrors, type FieldPath } from "react-hook-form";
 import { toast } from "sonner";
 import { ApiError, invoiceApi } from "@/lib/api-client";
@@ -17,6 +17,7 @@ import {
 import type { SendInvoiceInput } from "@/shared/dto/send-invoice.dto";
 import { DeleteInvoiceDialog } from "./delete-invoice-dialog";
 import { EditorToolbar } from "./editor-toolbar";
+import { countFieldErrors } from "./form-errors";
 import { useSaveShortcut } from "./hooks/use-save-shortcut";
 import { DEFAULT_PAYMENT_TERMS_DAYS, snapshotOf } from "./invoice-form-values";
 import { MobileActionBar } from "./mobile-action-bar";
@@ -65,6 +66,7 @@ export function InvoiceEditor({ initialValues, savedInvoice }: InvoiceEditorProp
   const [view, setView] = useState<EditorView>("edit");
   const [sendDialog, setSendDialog] = useState<SendDialogState | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     // New invoices are rendered with the server's date; switch to the browser's local date.
@@ -125,6 +127,14 @@ export function InvoiceEditor({ initialValues, savedInvoice }: InvoiceEditorProp
     toast.error(count === 1 ? "1 field needs attention" : `${count} fields need attention`, {
       description: "Fix the highlighted fields, then save again.",
     });
+    focusFirstInvalidField();
+  }
+
+  /** Focuses the first invalid input once sections with errors have opened. */
+  function focusFirstInvalidField() {
+    setTimeout(() => {
+      formRef.current?.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
+    }, 60);
   }
 
   function showApiError(error: unknown) {
@@ -135,10 +145,9 @@ export function InvoiceEditor({ initialValues, savedInvoice }: InvoiceEditorProp
     for (const { path, message } of error.fieldErrors) {
       form.setError(path as FieldPath<InvoiceInput>, { type: "server", message });
     }
-    const firstPath = error.fieldErrors[0]?.path;
-    if (firstPath) {
+    if (error.fieldErrors.length > 0) {
       setView("edit");
-      setTimeout(() => form.setFocus(firstPath as FieldPath<InvoiceInput>));
+      focusFirstInvalidField();
     }
     toast.error(error.message);
   }
@@ -231,6 +240,7 @@ export function InvoiceEditor({ initialValues, savedInvoice }: InvoiceEditorProp
         className="mx-auto grid max-w-[1600px] items-start gap-6 px-4 pt-5 pb-32 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:pt-6 lg:pb-12 xl:grid-cols-[minmax(0,40rem)_minmax(0,1fr)] print:block print:max-w-none print:p-0"
       >
         <form
+          ref={formRef}
           noValidate
           aria-label="Invoice details"
           onSubmit={(event) => {
@@ -280,15 +290,4 @@ export function InvoiceEditor({ initialValues, savedInvoice }: InvoiceEditorProp
 /** Stops Enter in a single-line field from submitting the whole invoice. */
 function preventImplicitSubmit(event: KeyboardEvent<HTMLFormElement>) {
   if (event.key === "Enter" && event.target instanceof HTMLInputElement) event.preventDefault();
-}
-
-/** Counts leaf field errors, including those inside line items and custom fields. */
-function countFieldErrors(errors: object): number {
-  return Object.values(errors).reduce<number>((count, error) => {
-    if (!error || typeof error !== "object") return count;
-    return (
-      count +
-      ("message" in error && typeof error.message === "string" ? 1 : countFieldErrors(error))
-    );
-  }, 0);
 }

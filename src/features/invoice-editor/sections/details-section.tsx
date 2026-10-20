@@ -4,6 +4,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { Chip } from "@/components/ui/chip";
 import { addDays, daysBetween } from "@/shared/dates";
 import type { InvoiceInput } from "@/shared/dto/invoice.dto";
+import { formatIsoDate } from "@/shared/format";
 import { INVOICE_LIMITS as LIMITS } from "@/shared/invoice/limits";
 import { TextField } from "../form-fields";
 import { PAYMENT_TERM_OPTIONS } from "../invoice-form-values";
@@ -12,8 +13,23 @@ import { SectionCard } from "../section-card";
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export function DetailsSection() {
+  const [invoiceNumber, issueDate, dueDate] = useWatch<
+    InvoiceInput,
+    ["invoiceNumber", "issueDate", "dueDate"]
+  >({ name: ["invoiceNumber", "issueDate", "dueDate"] });
+  const summary = [
+    invoiceNumber.trim(),
+    formatIsoDate(issueDate) && `Issued ${formatIsoDate(issueDate)}`,
+    formatIsoDate(dueDate) && `Due ${formatIsoDate(dueDate)}`,
+  ].filter(Boolean);
+
   return (
-    <SectionCard title="Invoice details">
+    <SectionCard
+      title="Invoice details"
+      description="Invoice number, issue date and when payment is due."
+      summary={summary.join(" · ") || "Add an invoice number and dates"}
+      fields={["invoiceNumber", "issueDate", "dueDate"]}
+    >
       <div className="grid gap-4 @lg:grid-cols-3">
         <TextField
           name="invoiceNumber"

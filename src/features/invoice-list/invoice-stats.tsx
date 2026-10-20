@@ -27,7 +27,7 @@ export function InvoiceStats({ invoices }: { invoices: InvoiceSummaryDto[] }) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="min-w-0 rounded-2xl border border-line bg-surface px-3 py-3 shadow-card sm:px-5 sm:py-4"
+          className="min-w-0 rounded-2xl bg-surface px-3 py-3 shadow-panel sm:px-5 sm:py-4"
         >
           <dt className="text-xs text-ink-muted sm:text-sm">{stat.label}</dt>
           <dd className="mt-1 truncate font-display text-lg font-medium tabular-nums sm:text-[1.75rem]">

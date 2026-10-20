@@ -17,9 +17,10 @@ import { sampleInvoices } from "@/shared/invoice/sample-invoices";
 
 const SAMPLE_DATE = "2026-10-20";
 const HIGHLIGHTS = ["Live preview", "Print-ready PDF", "Email in one click"];
+const SHEET_EASING = "ease-[cubic-bezier(0.2,0.8,0.2,1)]";
 
 export default function HomePage() {
-  const [sample] = sampleInvoices(SAMPLE_DATE);
+  const [front, back] = sampleInvoices(SAMPLE_DATE);
 
   return (
     <>
@@ -32,10 +33,10 @@ export default function HomePage() {
         </Link>
       </SiteHeader>
 
-      <main id="main">
-        <section className="mx-auto grid max-w-6xl items-center gap-14 overflow-x-clip px-4 pt-12 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-14 lg:pt-20 lg:pb-28">
+      <main id="main" className="overflow-x-clip">
+        <section className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-12 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-14 lg:pt-20 lg:pb-28">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-ink-soft shadow-card">
+            <p className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1 text-xs font-medium text-ink-soft shadow-control">
               <span aria-hidden className="size-1.5 rounded-full bg-brand" />
               Invoicing for small businesses
             </p>
@@ -66,11 +67,14 @@ export default function HomePage() {
             </ul>
           </div>
 
-          <div aria-hidden className="relative mx-auto w-full max-w-xl lg:max-w-none">
-            <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-[3px] bg-white/60 shadow-sheet" />
+          <div aria-hidden className="group relative mx-auto w-full max-w-xl lg:max-w-none">
             <InvoiceSheet
-              invoice={toInvoiceDocument({ ...sample, notes: "" })}
-              className="relative rounded-[3px] shadow-sheet"
+              invoice={toInvoiceDocument({ ...back, notes: "" })}
+              className={`absolute inset-0 translate-x-3 translate-y-3 overflow-hidden rounded-[3px] shadow-sheet transition-transform duration-700 group-hover:translate-x-[12%] group-hover:-translate-y-[2%] group-hover:rotate-[5deg] ${SHEET_EASING}`}
+            />
+            <InvoiceSheet
+              invoice={toInvoiceDocument({ ...front, notes: "" })}
+              className={`relative rounded-[3px] shadow-sheet transition-transform duration-700 group-hover:-translate-x-[3%] group-hover:-rotate-[1.5deg] ${SHEET_EASING}`}
             />
           </div>
         </section>
@@ -126,7 +130,7 @@ function Feature({
 }) {
   return (
     <div>
-      <span className="grid size-11 place-items-center rounded-xl border border-line bg-surface text-brand shadow-card">
+      <span className="grid size-11 place-items-center rounded-xl bg-surface text-brand shadow-control">
         <Icon aria-hidden className="size-5" />
       </span>
       <h3 className="mt-5 text-lg font-semibold">{title}</h3>

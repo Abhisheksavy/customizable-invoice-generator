@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/cn";
 import type { InvoiceInput } from "@/shared/dto/invoice.dto";
 import { INVOICE_LIMITS as LIMITS } from "@/shared/invoice/limits";
 import { TextField } from "../form-fields";
@@ -22,6 +21,16 @@ export function CustomFieldsSection() {
   const usedLabels = new Set(customFields.map((field) => field.label.trim().toLowerCase()));
   const suggestions = SUGGESTED_LABELS.filter((label) => !usedLabels.has(label.toLowerCase()));
   const canAdd = fields.length < LIMITS.customFields;
+  const hiddenCount = customFields.filter((field) => !field.visible).length;
+  const summary =
+    customFields.length === 0
+      ? "None added"
+      : [
+          `${customFields.length} ${customFields.length === 1 ? "field" : "fields"}`,
+          hiddenCount > 0 && `${hiddenCount} hidden`,
+        ]
+          .filter(Boolean)
+          .join(" · ");
 
   const addField = (label = "") =>
     append(
@@ -33,6 +42,8 @@ export function CustomFieldsSection() {
     <SectionCard
       title="Custom fields"
       description="Extra details such as a PO number. Hidden fields are saved for you but left off the invoice, PDF and email."
+      summary={summary}
+      fields={["customFields"]}
     >
       {fields.length > 0 && (
         <ul className="mb-4 flex flex-col gap-3">
@@ -70,12 +81,7 @@ function CustomFieldRow({ index, onRemove }: { index: number; onRemove: () => vo
   const displayName = label.trim() || `field ${index + 1}`;
 
   return (
-    <li
-      className={cn(
-        "rounded-xl border border-line p-3 transition-colors sm:p-4",
-        !isVisible && "bg-surface-muted",
-      )}
-    >
+    <li className="rounded-xl bg-surface p-3 shadow-tile sm:p-4">
       <div className="grid gap-3 @lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <TextField
           name={`customFields.${index}.label`}

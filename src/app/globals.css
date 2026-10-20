@@ -19,8 +19,14 @@
   --color-success-tint: #eaf5ef;
   --color-warning: #8a5300;
   --color-warning-tint: #fbf3e4;
+  --color-field: #f5f2ec;
+  --color-field-hover: #efeae2;
 
   --shadow-card: 0 1px 2px rgb(26 25 21 / 0.05);
+  --shadow-panel: 0 1px 2px rgb(26 25 21 / 0.04), 0 10px 30px -12px rgb(26 25 21 / 0.18);
+  --shadow-tile: 0 1px 2px rgb(26 25 21 / 0.06), 0 6px 16px -8px rgb(26 25 21 / 0.16);
+  --shadow-control: 0 0 0 1px rgb(26 25 21 / 0.07), 0 1px 3px rgb(26 25 21 / 0.1);
+  --shadow-field: inset 0 1px 2px rgb(26 25 21 / 0.08);
   --shadow-sheet: 0 1px 2px rgb(26 25 21 / 0.06), 0 24px 48px -18px rgb(26 25 21 / 0.28);
   --shadow-float: 0 12px 32px -12px rgb(26 25 21 / 0.4);
 
