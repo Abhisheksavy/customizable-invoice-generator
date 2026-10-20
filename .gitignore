@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# testing
+/coverage
+
+# local database
+/data/*
+!/data/.gitkeep
+
+# env files (only the example is committed)
+.env*
+!.env.example
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+.vercel
